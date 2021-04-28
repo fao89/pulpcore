@@ -54,7 +54,7 @@ jobs:
       - name: Check manifest
         run: check-manifest
 
-      
+
 
       - name: Check for gettext problems
         run: sh .ci/scripts/check_gettext.sh
@@ -119,6 +119,8 @@ jobs:
       - name: Script
         run: .github/workflows/scripts/script.sh
         shell: bash
+        env:
+          SSL_CERT_DIR: /etc/ssl/certs
 
       - name: After failure
         if: failure()
