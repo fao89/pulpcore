@@ -92,7 +92,7 @@ ansible-playbook build_container.yaml
 ansible-playbook start_container.yaml
 
 sudo docker cp pulp:/etc/pulp/certs/ca.crt /usr/local/share/ca-certificates/pulp_ca.crt
-sudo docker cp pulp:/etc/pulp/certs/* /etc/ssl/certs
+sudo docker cp pulp:/etc/pulp/certs/*.crt /etc/ssl/certs
 sudo update-ca-certificates
 
 echo ::group::PIP_LIST
