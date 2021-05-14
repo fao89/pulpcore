@@ -54,7 +54,7 @@ jobs:
       - name: Check manifest
         run: check-manifest
 
-      
+
 
       - name: Check for gettext problems
         run: sh .ci/scripts/check_gettext.sh
@@ -117,7 +117,9 @@ jobs:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
       - name: Script
-        run: .github/workflows/scripts/script.sh
+        run: |
+          pip install "click<8.0"
+          .github/workflows/scripts/script.sh
         shell: bash
 
       - name: After failure

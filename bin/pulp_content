@@ -5,4 +5,8 @@ import aiohttp
 from pulpcore.content import server
 
 
-aiohttp.web.run_app(server(), port=24816)
+def start():
+    aiohttp.web.run_app(server(), port=24816)
+
+
+start()

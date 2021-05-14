@@ -1,9 +1,108 @@
+[tool.poetry]
+name = "pulpcore"
+version = "3.13.0.dev"
+description = "Pulp Django Application and Related Modules"
+authors = ["Pulp Project Developers <pulp-dev@redhat.com>"]
+license = "GPL-2.0-or-later"
+readme = "README.md"
+homepage = "https://pulpproject.org/"
+repository = "https://github.com/pulp/pulpcore"
+documentation = "https://docs.pulpproject.org/pulpcore/"
+classifiers=[
+  "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+  "Operating System :: POSIX :: Linux",
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Django",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+]
+packages = [
+    {include = "pulpcore"}
+]
+include = [
+  "LICENSE",
+  "bin/pulp_content",
+  "poetry.lock",
+  "pyproject.toml",
+  "requirements.txt",
+  "CHANGES.rst",
+  "CODE_OF_CONDUCT.md",
+  "COMMITMENT",
+  "CONTRIBUTING.md",
+  "COPYRIGHT",
+  "manage.py",
+  "functest_requirements.txt",
+  "test_requirements.txt",
+  "unittest_requirements.txt",
+]
+
+[tool.poetry.scripts]
+pulp-content = "bin.pulp_content:start"
+
+[tool.poetry.plugins."console_scripts"]
+"pulpcore-manager" = "pulpcore.app.manage:manage"
+"pulpcore-worker" = "pulpcore.tasking.entrypoint:worker"
+
+[tool.poetry.urls]
+"Redmine" = "https://pulp.plan.io/projects/pulp"
+
+[tool.poetry.extras]
+s3 = ["django-storages[boto3]"]
+azure = ["django-storages[azure]"]
+prometheus = ["django-prometheus"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+asyncio-throttle = "≃1.0"
+aiohttp = "≃3.7.4"
+aiodns = "≃2.0.0"
+aiofiles = "==0.6.0"
+backoff = "≃1.10.0"
+click = "~=7.1.2"
+Django = "~=2.2.23" # LTS version, switch only if we have a compelling reason to
+django-currentuser = "~=0.5.3"
+django-filter = "~=2.4.0"
+django-guardian = "~=2.3.0"
+django-guid = "<3.0"
+django-import-export = "~=2.5.0"
+django-lifecycle = "~=0.9.1"
+djangorestframework = "~=3.12.4"
+djangorestframework-queryfields = "~=1.0.0"
+drf-access-policy = "~=0.9.0"
+drf-nested-routers = "==0.93.3"
+drf-spectacular = "~=0.15.1"
+dynaconf = "~=3.1.4"
+gunicorn = "~=20.1.0"
+Jinja2 = "*"
+pygtrie = "~=2.4.2"
+psycopg2 = ">=2.7,<2.9"
+PyYAML = ">=5.1.1,<5.5.0"
+python-gnupg = "~=0.4.7"
+redis = ">=3.4.0"
+rq = "~=1.8.0"
+setuptools = ">=39.2.0"
+whitenoise = ">=5.0.0,<5.3.0"
+
+[tool.poetry.dev-dependencies]
+black = ">19.10b0"
+check-manifest = "^0.46"
+django-crispy-forms = "^1.11.2"
+django-extensions = "^3.1.3"
+codecov = "^2.1.11"
+coverage = "^5.5"
+flake8 = "^3.9.2"
+flake8-black = "^0.2.1"
+ipython = "^7.16.0"
+
 [build-system]
 requires = [
+    "poetry-core>=1.0.0",
     "setuptools >= 40.8.0",
     "wheel >= 0.29.0",
 ]
-build-backend = 'setuptools.build_meta'
+build-backend = "poetry.core.masonry.api"
 
 [tool.towncrier]
 package = "pulpcore"
@@ -86,6 +185,8 @@ ignore = [
     ".pep8speaks.yml",
     ".ci/**",
     ".github/**",
+    "setup.py",
+    "MANIFEST.in",
 ]
 
 
