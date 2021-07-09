@@ -80,13 +80,19 @@ class PublishAnyRepoVersionTestCase(unittest.TestCase):
            repository versions to be published at same time.
         """
         # Step 1
-        for file_content in get_content(self.repo.to_dict())[FILE_CONTENT_NAME]:
+        file_content = get_content(self.repo.to_dict())[FILE_CONTENT_NAME]
+        versions = get_versions(self.repo.to_dict())
+        print(file_content)
+        print(versions)
+        for file_content in file_content:
             repository_modify_data = RepositoryAddRemoveContent(
                 remove_content_units=[file_content["pulp_href"]]
             )
             modify_response = self.repo_api.modify(self.repo.pulp_href, repository_modify_data)
             monitor_task(modify_response.task)
-        version_hrefs = tuple(ver["pulp_href"] for ver in get_versions(self.repo.to_dict()))
+        versions = get_versions(self.repo.to_dict())
+        print(versions)
+        version_hrefs = tuple(ver["pulp_href"] for ver in versions)
         non_latest = choice(version_hrefs[:-1])
 
         # Step 2
