@@ -313,6 +313,7 @@ class NewPulpWorker:
         task.save(update_fields=["worker"])
         cancel_state = None
         cancel_reason = None
+        _logger.info(f"cwd={os.getcwd()}")
         with TemporaryDirectory(dir=".") as task_working_dir_rel_path:
             task_process = Process(target=_perform_task, args=(task.pk, task_working_dir_rel_path))
             task_process.start()
