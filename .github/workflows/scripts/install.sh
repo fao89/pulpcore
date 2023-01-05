@@ -76,7 +76,7 @@ pulp_container_tag: https
 
 VARSYAML
 
-SCENARIOS=("pulp" "performance" "azure" "s3" "stream" "plugin-from-pypi" "generate-bindings" "lowerbounds")
+SCENARIOS=("pulp" "performance" "azure" "gcp" "s3" "stream" "plugin-from-pypi" "generate-bindings" "lowerbounds")
 if [[ " ${SCENARIOS[*]} " =~ " ${TEST} " ]]; then
   sed -i -e '/^services:/a \
   - name: pulp-fixtures\
@@ -127,6 +127,37 @@ if [ "$TEST" = "azure" ]; then
       - ./azurite:/etc/pulp\
     command: "azurite-blob --blobHost 0.0.0.0 --cert /etc/pulp/azcert.pem --key /etc/pulp/azkey.pem"' vars/main.yaml
   sed -i -e '$a azure_test: true\
+pulp_scenario_settings: null\
+' vars/main.yaml
+fi
+cat >> credentials.json << GCP_JSON
+{
+  "client_id": "pulp-ci-test.apps.googleusercontent.com",
+  "client_secret": "pulp-Secret",
+  "refresh_token": "Pulp-CI-Refresh-Token",
+  "type": "authorized_user"
+}
+GCP_JSON
+if [ "$TEST" = "gcp" ]; then
+  mkdir -p cigcp gcpdata/gcppulp
+  mv credentials.json cigcp/credentials.json
+  cd cigcp
+  openssl req -newkey rsa:2048 -x509 -nodes -keyout gcpkey.pem -new -out gcpcert.pem -sha256 -days 365 -addext "subjectAltName=DNS:ci-gcp" -subj "/C=CO/ST=ST/L=LO/O=OR/OU=OU/CN=CN"
+  sudo cp gcpcert.pem /usr/local/share/ca-certificates/gcpcert.crt
+  sudo dpkg-reconfigure ca-certificates
+  ls -al
+  pwd
+  cd ..
+  sed -i -e '/^services:/a \
+  - name: ci-gcp\
+    image: fsouza/fake-gcs-server\
+    volumes:\
+      - ./cigcp:/etc/pulp\
+      - ./gcpdata:/data\
+    env:\
+      GOOGLE_APPLICATION_CREDENTIALS: "/etc/pulp/credentials.json"\
+    command: "-cert-location /etc/pulp/gcpcert.pem -public-host https://ci-gcp:4443"' vars/main.yaml
+  sed -i -e '$a gcp_test: true\
 pulp_scenario_settings: null\
 ' vars/main.yaml
 fi
